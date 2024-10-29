@@ -1,0 +1,10 @@
+# .gitignore
+build/
+dist/
+*.spec
+*.exe
+__pycache__/
+*.pyc
+*.pyo
+.vscode/
+.idea/

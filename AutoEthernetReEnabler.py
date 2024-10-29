@@ -50,9 +50,9 @@ if __name__ == "__main__":
 
     adapter_name = "Ethernet"
     disable_adapter(adapter_name)
-    time.sleep(7)
+    time.sleep(1)
     enable_adapter(adapter_name)
-    time.sleep(7)
+    time.sleep(2)
 
     exe_path = os.path.join(os.getcwd(), 'dist', 'AutoEthernetReEnabler.exe')
     remove_old_exe(exe_path)
