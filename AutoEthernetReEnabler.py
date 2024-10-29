@@ -32,6 +32,7 @@ def add_to_startup(file_path):
     open_key = reg.OpenKey(key, key_value, 0, reg.KEY_ALL_ACCESS)
     reg.SetValueEx(open_key, "AutoEthernetReEnabler", 0, reg.REG_SZ, file_path)
     reg.CloseKey(open_key)
+    print(f"Added {file_path} to startup")
 
 def remove_old_exe(file_path):
     if os.path.exists(file_path):
@@ -47,6 +48,18 @@ def add_defender_exclusion(file_path):
     subprocess.run(["powershell", "-Command", ps_script], shell=True)
     print(f"Added {file_path} to Windows Defender exclusions")
 
+def create_scheduled_task(file_path):
+    ps_script = f"""
+    $Action = New-ScheduledTaskAction -Execute '{file_path}'
+    $Trigger1 = New-ScheduledTaskTrigger -AtLogOn
+    $Trigger2 = New-ScheduledTaskTrigger -AtStartup
+    $Trigger3 = New-ScheduledTaskTrigger -Daily -At 12:00AM
+    $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+    Register-ScheduledTask -Action $Action -Trigger $Trigger1, $Trigger2, $Trigger3 -Settings $Settings -TaskName "AutoEthernetReEnabler" -Description "Auto Ethernet Re-Enabler Task"
+    """
+    subprocess.run(["powershell", "-Command", ps_script], shell=True)
+    print(f"Created scheduled task for {file_path}")
+
 if __name__ == "__main__":
     run_as_admin()
 
@@ -56,7 +69,8 @@ if __name__ == "__main__":
     enable_adapter(adapter_name)
     time.sleep(2)
 
-    exe_path = os.path.join(os.getcwd(), 'dist', 'AutoEthernetReEnabler.exe')
+    exe_path = os.path.abspath(sys.argv[0])
     remove_old_exe(exe_path)
     add_to_startup(exe_path)
     add_defender_exclusion(exe_path)
+    create_scheduled_task(exe_path)
