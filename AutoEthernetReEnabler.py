@@ -30,16 +30,25 @@ def add_to_startup(file_path):
     key = reg.HKEY_CURRENT_USER
     key_value = f'Software\\Microsoft\\Windows\\CurrentVersion\\Run'
     open_key = reg.OpenKey(key, key_value, 0, reg.KEY_ALL_ACCESS)
-    reg.SetValueEx(open_key, "AutoEthernetReEnabler", 0, reg.REG_SZ, file_path)
+    reg.SetValueEx(open_key, "AutoEthernetReEnabler.exe", 0, reg.REG_SZ, file_path)
     reg.CloseKey(open_key)
     print(f"Added {file_path} to startup")
 
 def remove_old_exe(file_path):
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        print(f"Removed old executable: {file_path}")
+    retries = 3
+    for i in range(retries):
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                print(f"Removed old executable: {file_path}")
+            else:
+                print(f"No old executable found at: {file_path}")
+            break
+        except PermissionError as e:
+            print(f"Attempt {i+1} to remove old executable failed: {e}")
+            time.sleep(1)
     else:
-        print(f"No old executable found at: {file_path}")
+        print(f"Failed to remove old executable after {retries} attempts")
 
 def add_defender_exclusion(file_path):
     ps_script = f"""
