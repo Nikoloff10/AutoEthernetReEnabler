@@ -48,7 +48,8 @@ def create_scheduled_task(file_path):
     $Trigger2 = New-ScheduledTaskTrigger -AtStartup
     $Trigger3 = New-ScheduledTaskTrigger -Daily -At 12:00AM
     $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-    Register-ScheduledTask -Action $Action -Trigger $Trigger1, $Trigger2, $Trigger3 -Settings $Settings -TaskName "AutoEthernetReEnabler" -Description "Auto Ethernet Re-Enabler Task"
+    $Principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+    Register-ScheduledTask -Action $Action -Trigger $Trigger1, $Trigger2, $Trigger3 -Settings $Settings -Principal $Principal -TaskName "AutoEthernetReEnabler" -Description "Auto Ethernet Re-Enabler Task"
     """
     subprocess.run(["powershell", "-Command", ps_script], shell=True)
     print(f"Created scheduled task for {file_path}")
