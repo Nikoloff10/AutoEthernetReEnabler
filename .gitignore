@@ -7,4 +7,4 @@ __pycache__/
 *.pyo
 .vscode/
 .idea/
-!dist/AutoEthernetReEnabler/AutoEthernetReEnabler.exe
+!dist/AutoEthernetReEnabler.exe
