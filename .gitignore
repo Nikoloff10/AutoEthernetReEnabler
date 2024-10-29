@@ -2,9 +2,9 @@
 build/
 dist/
 *.spec
-*.exe
 __pycache__/
 *.pyc
 *.pyo
 .vscode/
 .idea/
+!dist/AutoEthernetReEnabler/AutoEthernetReEnabler.exe
